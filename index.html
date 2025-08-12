@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Keyword Search</title>
+</head>
+<body>
+
+<div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-top:50px;">
+  <input
+    type="text"
+    id="searchInput"
+    placeholder="Search using keywords..."
+    style="padding:10px; font-size:16px; border:1px solid #ccc; border-radius:5px; width:300px;"
+  />
+  <button
+    onclick="performSearch()"
+    style="padding:10px 20px; font-size:16px; background:#007BFF; color:#fff; border:none; border-radius:5px; cursor:pointer;"
+  >
+    Search
+  </button>
+</div>
+
+<script src="keywordMap.js"></script>
+<script>
+function performSearch() {
+  const rawQuery = document.getElementById('searchInput').value;
+  const query = rawQuery.trim().toLowerCase();
+
+  if (!query) {
+    alert("Please enter a keyword to search.");
+    return;
+  }
+  if (keywordMap[query]) {
+    window.open(keywordMap[query][0], "_blank");
+  } else {
+    alert("No results found for: " + query);
+  }
+}
+</script>
+
+</body>
+</html>
