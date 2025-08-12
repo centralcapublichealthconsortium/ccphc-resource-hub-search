@@ -1,0 +1,297 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Keyword Search — Embedded</title>
+<style>
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:18px;background:#f6f7fb;color:#111}
+  .wrap{max-width:980px;margin:0 auto;}
+  h1{text-align:center;margin-bottom:8px}
+  .search{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  input[type="search"]{padding:10px 12px;font-size:16px;border-radius:8px;border:1px solid #cfd6e3;width:420px;max-width:90%}
+  button{padding:10px 14px;border-radius:8px;border:none;background:#0b6cff;color:white;font-weight:600;cursor:pointer}
+  #meta{text-align:center;color:#555;margin-bottom:12px}
+  #results{margin-top:8px}
+  .card{background:white;padding:12px;border-radius:10px;box-shadow:0 1px 4px rgba(10,10,20,0.06);margin-bottom:10px}
+  .name{font-weight:700;margin-bottom:6px}
+  .url{font-size:13px;color:#0066cc;word-break:break-all}
+  .kw{display:inline-block;background:#eef3ff;color:#0645ad;padding:4px 8px;border-radius:999px;font-size:12px;margin-right:6px;margin-bottom:6px}
+  .no-results{color:#a00;text-align:center}
+  .count{font-weight:600}
+  .small{font-size:13px;color:#666;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Resource Keyword Search</h1>
+  <div class="search">
+    <input id="q" type="search" placeholder="Type keywords (any word). Example: 'data equity' or 'climate'">
+    <button id="searchBtn">Search</button>
+    <button id="clearBtn" title="Clear search" style="background:#e6eefb;color:#0b6cff">Clear</button>
+  </div>
+  <div id="meta" class="small"><span id="count">0</span> results</div>
+  <div id="results"></div>
+  <p class="small">Search checks resource name, URL, and keywords. Partial matches allowed. Results open in a new tab.</p>
+</div>
+
+<script>
+// Embedded dataset
+const DATA = [
+  {
+    "name": "PSE Toolkit",
+    "url": "https://drive.google.com/file/d/1eqHYbV3b9RSt0Qjud_zOWBSB9trI1hVN/view?usp=sharing",
+    "keywords": [
+      "Assessment \n•        Community health needs\n•        Community assets\n•        Community engagement\n•        Health status indicators\n•        Social determinants of health\n•        Policy",
+      "Systems",
+      "and Environmental Change\n•        Cross-sector collaboration\n•        Multi-sectoral data\n•        Narrative-based health data\n•        Community-informed research\n•        Root cause analysis\n•        Community voice\n•        Equity-centered assessment\n•        Lived experience as data\n•        Intersectoral analysis\n•        Data triangulation\n•        Culturally relevant assessment\n•        Collaborative knowledge-building\n•        Power analysis \n\nPolicy Development \n•        Two-way communication\n•        Trust-building\n•        Asset-based messaging\n•        Narrative framing\n•        Health equity policies\n•        Policy education \n•        Community-driven solutions\n•        Authentic engagement\n•        Strengths-based relationships\n•        Inclusive coalitions\n•        Multi-sector partnerships\n•        Community-informed policies\n•        Public health expertise\n•        Historical injustice correction\n•        Policy review and reform\n•        Health impact assessment\n•        Resilience-building\n•        Cross-sector lawmaking\n•        Health in all policies\n•        Community-based planning\n•        Preparedness strategies\n•        Continuous policy evaluation\n•        Systems-level change\n•        Co-creation of laws and plans\n•        Policy-level change\n•        Environmental-level change\n\nAssurance \n•        Health services access\n•        Preventive care access\n•        Whole-person care\n•        Social services connection\n•        Barrier reduction\n•        Health equity in access\n•        Workforce development\n•        Competent public health workforce\n•        Quality improvement culture\n•        Public health evaluation\n•        Evidence-based services\n•        Organizational infrastructure\n•        System-level understanding\n•        Resource management\n•        Financial stewardship\n•        Human resources effectiveness\n•        Equitable service delivery\n•        Service accessibility\n•        Systemic quality assurance\n•        Health system capacity\n•        Community health needs\n•        Community assets\n•        Community engagement\n•        Health status indicators\n•        Social determinants of health\n•        Policy",
+      "Systems",
+      "and Environmental Change\n•        Cross-sector collaboration\n•        Multi-sectoral data\n•        Narrative-based health data\n•        Community-informed research\n•        Root cause analysis\n•        Community voice\n•        Equity-centered assessment\n•        Lived experience as data\n•        Intersectoral analysis\n•        Data triangulation\n•        Culturally relevant assessment\n•        Collaborative knowledge-building\n•        Power analysis \n\nPolicy Development \n•        Two-way communication\n•        Trust-building\n•        Asset-based messaging\n•        Narrative framing\n•        Health equity policies\n•        Policy education \n•        Community-driven solutions\n•        Strengths-based relationships\n•        Inclusive coalitions\n•        Multi-sector partnerships\n•        Community-informed policies\n•        Public health expertise\n•        Historical injustice correction\n•        Policy review and reform\n•        Health impact assessment\n•        Resilience-building\n•        Cross-sector lawmaking\n•        Health in all policies\n•        Community-based planning\n•        Preparedness strategies\n•        Continuous policy evaluation\n•        Systems-level change\n•        Co-creation of laws and plans\n•        Policy-level change\n•        Environmental-level change\n\nAssurance \n•        Health services access\n•        Preventive care access\n•        Whole-person care\n•        Social services connection\n•        Barrier reduction\n•        Health equity in access\n•        Workforce development\n•        Competent public health workforce\n•        Quality improvement culture\n•        Public health evaluation\n•        Evidence-based services\n•        Organizational infrastructure\n•        System-level understanding\n•        Resource management\n•        Financial stewardship\n•        Human resources effectiveness\n•        Equitable service delivery\n•        Service accessibility\n•        Systemic quality assurance\n•        Health system capacity\n\nAdditional words\n- priority setting"
+    ]
+  },
+  {
+    "name": "Communication Campaigns",
+    "url": "https://drive.google.com/drive/folders/1-pFlFoU-KRk-sqpjtwEW-Ttw09BOBw4w?usp=drive_link",
+    "keywords": [
+      "Policy Development \n•        Accessible health information\n•        Health education resources\n•        Multi-sector collaboration\n•        Strategic communication\n•        Timely communication\n•        Accurate messaging\n•        Targeted communication\n•        Inclusive messaging\n•        Culturally appropriate communication\n•        Health literacy\n•        Equity-focused communication\n•        Narrative framing\n•        Asset-based messaging\n•        Avoiding harmful narratives\n•        Disproportionately affected populations\n•        Community-centered communication\n•        Communication equity\n•        Population-specific outreach\n\nAssurance \n•        Lifelong learning culture\n•        Public health capacity-building\n•        Strategic planning\n•        Leadership development\n•        Communication skills\n•        Public health infrastructure\n•        Organizational learning\n•        Competency-based training\n\nCommunications\n- Public health communication\n- Health communication resources\n- Public health messaging tools\n- Health education materials\n- Communication strategies in public health\n- Health communication for communities\n- Social media health communication\n- Digital health communication tools\n- Online public health campaigns\n- Infographics for health education"
+    ]
+  },
+  {
+    "name": "Snapshot of Healthcare",
+    "url": "https://drive.google.com/file/d/15DyaK8rp2cyLhPjGg0WuWpASlbujgnJC/view?usp=sharing",
+    "keywords": [
+      "Assessment \n•        Data analysis\n•        Health trends\n•        Threat identification\n•        Emerging health issues\n•        Disproportionately affected populations\n•        Health disparities\n•        Root cause analysis\n•        Health inequities\n•        Cross-sector data inputs\n•        Multi-sectoral collaboration\n•        Social determinants of health\n•        Health surveillance\n•        Data collection\n•        Data monitoring\n•        Economic determinants\n•        Environmental determinants\n•        Community health status\n•        Population health monitoring\n•        Equity-focused assessment\n•        Health equity \n\nPolicy Development \n•        Health information dissemination\n•        Health education resources\n•        Accessible communication\n•        Multi-sector collaboration\n•        Community-informed messaging\n•        Health communication strategy\n•        Resource development\n•        Cross-sector partnerships\n•        Public health outreach\n•        Equity in messaging\n•        Health literacy promotion\n\n Assurance \n•        Lifelong learning\n•        Public health workforce development\n•        Knowledge translation\n•        Practice-based evidence\n•        Research-to-practice\n•        Evidence-informed decision-making\n•        Public health innovation\n•        Equitable resource allocation\n•        Public health funding\n•        Resource distribution\n•        Health systems improvement\n•        Infrastructure investment\n•        Building evidence base\n•        Research integration\n•        Strategic public health planing\n\nAdditional keywords\n•      Health indicators\n•      Healthy Places Index\n•      Health statistics\n•      Health education specialists\n•      communicable disease specialists\n•      Disease investigation"
+    ]
+  },
+  {
+    "name": "RHEA",
+    "url": "https://chhs.fresnostate.edu/ccchhs/ccphc/documents/SJVPHC%20RHEA%20Report%20Final%203.22.2022%20.pdf",
+    "keywords": [
+      "Assessment \n•        Commission of Social Determinants of Health \n•        Structural determinants of social determinants of health inequities\n•        Intermediary determinants of social determinants of health \n•        Socieconomic and political context\n•        Governance\n•        Macroeconomic policies\n•        Social policies\n•        Public policies\n•        Culture and societal values \n•        Socieconomic position\n•        Social class\n•        Gender\n•        Ethnicity \n•        Racism \n•        Social cohesion & social capital \n•        Material circumstances\n•        Behavior and biological factors\n•        Psychological factors\n•        Health system \n•        Equity \n•        Health disparities\n•        Root cause analysis\n•        Health inequities\n•        Community engagement\n•        Health status indicators\n•        Community needs and assets\n•        Narrative \n•        Key influences on health\n•        Data interpretation\n•        Data communication\n•        Disaggregated data\n•        Racial equity data\n•        Data transparency\n•        Cross-sectoral inputs\n•        Multi-sector data integration\n•        Social determinants of health\n•        Environmental determinants\n•        Equity-informed analysis \n•        Health outcomes \n•        Inclusive data practices\n\n Policy Development \n•        Multi-sector partnerships\n•        Health coalitions\n•        Intersectoral collaboration\n•        Strengths-based relationships\n•        Diverse stakeholder engagement\n•        Community-driven solutions\n•        Authentic engagement\n•        Equity in policymaking\n•        Historical injustice correction\n•        Policy analysis and reform\n•        Health impact assessment\n•        Law and policy collaboration\n•        Health improvement strategies\n•        Continuous policy development\n•        Policy evaluation\n•        Policy co-creation\n•        Systems-level planning\n•        Community-informed policies\n•        Inclusive governance\n•        Intersectoral action \n•        Social participation\n•        Empowerment \n•        Policies on stratification \n•        Reduce exposure to health-damaging factors \n•        Reduce unequal consequences \n•        Interventions \n•        Social policies \n•        Health policy \n\nAssurance \n•        Public health workforce capacity\n•        Workforce diversity\n•        Cultural competence\n•        Cultural humility\n•        Lifelong learning\n•        Public health education\n•        Leadership development\n•        Future workforce pipeline\n•        Quality improvement culture\n•        Public health research translation\n•        Evidence-informed practice\n•        Practice-based evidence\n•        Evaluation of policies and programs\n•        Mixed methods (qualitative",
+      "quantitative",
+      "lived experience)\n•        Organizational infrastructure\n•        Resource equity\n•        Strategic planning\n•        Ethical leadership\n•        Transparent governance\n•        Financial stewardship\n•        Inclusive practice\n•        Decision-making accountability\n•        Community engagement in governance\n\nAdditional keywords\n- age\n- socioeconomic factors \n- income \n- disabilities\n- educational attainment \n- home ownership \n- employment status\n- Data-informed policy development \n- health inequity",
+      "containment",
+      "or mitigation strategies for population health"
+    ]
+  },
+  {
+    "name": "Committment to Health and Racial Equity",
+    "url": "https://drive.google.com/drive/folders/1PQz_h54JrilJHIpCU8CNlHIJGYYpiwN0?usp=drive_link",
+    "keywords": [
+      "Assessment\n•        Key influences on health\n•        Health narratives\n•        Data sharing\n•        Community health needs\n•        Community engagement\n•        Multi-sector collaboration\n•        Cross-sector inputs\n•        Social determinants of health\n•        Root causes of health outcomes\n•        Health Equity \n•        Racial Equity \n\nPolicy Development\n•        Two-way communication\n•        Trust-building\n•        Health promotion strategies\n•        Asset-based communication\n•        Avoiding harmful narratives\n•        Multisector coalitions\n•        Authentic community engagement\n•        Strengths-based relationships\n•        Inclusive partnerships\n•        Public health expertise\n•        Community-informed solutions\n•        Policy development\n•        Policy equity \n•        Correcting historical injustices\n•        Health equity policies\n•        Health impact assessment\n•        Community resilience policies\n•        Cross-sector policy collaboration\n•        Health improvement plans\n•        Health in all policies\n\nAssurance\n•        Health service access\n•        Workforce development\n•        Cultural humility\n•        Lifelong learning\n•        Public health pipeline\n•        Quality improvement\n•        Research-practice integration\n•        Evidence-informed decision-making\n•        Lived experience as data\n•        Community-based research\n•        Organizational infrastructure\n•        Public health governance\n•        Ethical leadership\n•        Resource management\n•        Commitment to health and racial equity \n•        Commitment\n•        Transparency\n•        Community accountability\n•        Foundational document \n•        North star"
+    ]
+  },
+  {
+    "name": "Quarterly Newsletter Archives",
+    "url": "https://docs.google.com/document/d/151g022dm13UHaP8_XltASMjTRxq7LMf3j5H01n0JOYo/edit?usp=sharing",
+    "keywords": [
+      "Newsletter\nIssue \nUpdates\nMinutes \nNotes\nRecordings\nEngagement \nbulleting \nReminder\nAnnouncement \nTraining\nPromotion \nJob announcement"
+    ]
+  },
+  {
+    "name": "Climate Change Report",
+    "url": "https://drive.google.com/file/d/1GseSdoF_--r0zL5E6SbFP2DtXT8MR-j-/view?usp=drive_link",
+    "keywords": [
+      "Assessment \n•        Data interpretation\n•        Data communication\n•        Multi-method data use\n•        Data visualization\n•        Climate-related work assessment \n•        Qualitative methods\n•        Quantitative methods\n•        Key Informant Interviews \n•        Grounded theory \n•        Thematic analysis \n\n Policy Development\n•        Accessible health information\n•        Health education resources\n•        Multi-sector collaboration\n•        Cross-sector partnerships\n•        Community engagement\n•        Authentic engagement\n•        Public health solutions\n•        Public health -informed policy\n•        Inform policy development \n•        Policy evaluation\n•        Health policy development\n•        Policy and law alignment\n•        Equity in policy\n•        Public health in climate-related work\n•        Collaborative governance\n•        Strategic policy planning\n\nAssurance \n•        Lifelong learning culture\n•        Public health education\n•        Research-to-practice\n•        Evidence-informed decision-making\n•        Mixed methods (qualitative",
+      "quantitative",
+      "lived experience)\n•        Lived experience as data\n•        Data-informed decision-making\n•        Health systems infrastructure\n•        Organizational capacity\n•        System-level understanding\n•        Public health system roles\n•        Evidence base building\n•        Leadership in public health\n•        Infrastructure development\n\nAdditional keywords\n•        Climate change \n•        Assessment \n•        Climate impact preparedness \n•        Emergency Preparedness Planning \n•        Stretegic Plan \n•        Climate Change Training \n•        Funding\n•        Communications \n•        Epidemiology knowledge\n•        Climate change priority \n•        Infectious Disease\n•        Communicable Disease Control \n•        Chronic disease and injury prevention and control \n•        Partnerships \n•        Vision\n•        Public Health Perspective \n•        Role of Local Health Department\n•        Response Planning & Integration of Equity \n•        Perception \n•        Climate-related work \n•        Strategies \n•        Recommendations \n•        Human-Centered \n•        Inclusive framing"
+    ]
+  },
+  {
+    "name": "Maternal Morbidity and Mortality Lit Review",
+    "url": "https://drive.google.com/file/d/1QZOv59c-8Fd-ineHkZ1fxuPLcj09XFbA/view?usp=drive_link",
+    "keywords": [
+      "Assessment \n•        Health surveillance\n•        Data collection\n•        Data analysis\n•        Health trends\n•        Emerging health issues\n•        Disproportionately affected populations\n•        Health disparities\n•        Health inequities\n•        Root cause analysis\n•        Social determinants of health\n•        Economic determinants of health\n•        Environmental determinants of health\n•        Multisector collaboration\n•        Cross-sector data sharing\n•        Community health assessment\n•        Equity-focused assessment\n•        Interagency data integration\n•        Multi-source data utilization\n\nPolicy Development \n•        Public health communication\n•        Health education\n•        Asset-based messaging\n•        Narrative framing\n•        Health equity messaging\n•        Culturally sensitive communication\n•        Inclusive health communication\n•        Counteracting harmful narratives\n•        Disproportionately affected populations\n•        Equity-centered communication\n\nAssurance \n•        Research-to-practice integration\n•        Evidence-informed decision-making\n•        Practice-based insights\n•        Public health research\n•        Knowledge translation\n•        Public health evidence base\n•        System-level understanding\n•        Public health system roles\n•        Health systems support\n\nAdditional keywords\n•        Maternal morbidity \n•        Maternal mortality \n•        Literature review \n•        Definitions \n•        Causes \n•        Gaps in data\n•        Datasets available \n•        Maternal Vulnerability \n•        Vulnerability index\n•        Infant Health \n•        Maternal Health"
+    ]
+  },
+  {
+    "name": "Perceptions Regional Report",
+    "url": "https://drive.google.com/file/d/183SvCW7NUNPB6duKjKcvXugk8f8p6zB9/view?usp=drive_link",
+    "keywords": [
+      "Assessment\r\n•\tHealth disparities\r\n•\tHealth inequities\r\n•\tCommunity health assessment\r\n•\tCommunity engagement\r\n•\tHealth needs\r\n•\tCommunity assets\r\n•\tHealth status\r\n•\tKey health influences\r\n•\tHealth narrative\r\n•\tCommunity members as experts\r\n•\tCommunity partnerships\n\r\nPolicy Development\r\n•\tAccurate communication\r\n•\tTimely communication\r\n•\tCommunication channels (e.g.",
+      "social media",
+      "mass media",
+      "peer networks)\r\n•\tHealth promotion messaging\r\n•\tCulturally appropriate communication\r\n•\tLinguistically appropriate communication\r\n•\tCommunity-informed messaging\r\n•\tCulturally resonant materials\r\n•\tTwo-way communication\r\n•\tTrust-building\r\n•\tAsset-based communication\r\n•\tAvoiding harmful narratives\r\n•\tPublic health education\r\n•\tStakeholder collaboration\r\n•\tCommunity influencers\r\n•\tPrevention strategies\r\n•\tHealth literacy\r\n\r\nAssurance\r\n•\tPublic health quality improvement\r\n•\tCulture of quality\r\n•\tEvidence-informed decision-making\r\n•\tPractice-based evidence\r\n•\tResearch-practice integration\r\n•\tQualitative data\r\n•\tQuantitative data\r\n•\tLived experience as data\r\n•\tStrategic planning\r\n•\tCommunication skills\r\n•\tPublic health research\r\n•\tPublic health practice\r\n\r\nAdditional keywords \r\n•\tRegional analysis \r\n•\tPerceptions of public health \r\n•\tRegional findings \r\n•\tFamiliarity of LHD\r\n•\tKnowledge of LHD\r\n•\tCorrelation \r\n•\tAttitude and knowledge\r\n•\tPublic health \r\n•\tThematic analysis \r\n•\tFocus groups\r\n•\tWeighted analysis"
+    ]
+  },
+  {
+    "name": "Traffic Fatalities Report",
+    "url": "https://storymaps.arcgis.com/stories/9034cae4498c4e96aca51f26ca64e931",
+    "keywords": [
+      "Assessment\n•        Health surveillance\n•        Health monitoring\n•        Epidemiologic identification\n•        Health data analysis\n•        Emerging health threats\n•        Racial health disparities\n•        Root cause analysis\n•        Social determinants of health\n•        Economic determinants of health\n•        Environmental determinants of health\n•        Innovative data methods\n•        Health informatics\n•        Public health technologies\n•        Data communication\n•        Multisector data integration\n•        Data-driven equity strategies\n•        Injury prevention\n•        Health equity analysis\n•        Predictive analytics in public health\n•        Data storytelling\n\n\n Policy Development\n•        Public health policy\n•        Policy input\n•        Health impact assessment\n•        Accessible health communication\n•        Health literacy\n•        Strategic communication\n•        Multi-sector collaboration\n•        Health education\n•        Asset-based messaging\n•        Narrative change\n•        Equity-focused policy\n•        Policy co-creation\n•        Cross-sector partnerships\n•        Community-informed policymaking\n•        Inclusive communication strategies\n•        Public health planning\n•        Upstream public health policy\n•        Health justice narratives\n\nAssurance\n•        Public health assurance\n•        Workforce development\n•        Cultural humility\n•        Culturally competent workforce\n•        Competency-based training\n•        Strategic public health leadership\n•        Public health education\n•        Health equity workforce\n•        Academic partnerships\n•        Community-relevant learning\n•        Lifelong learning\n•        Evidence-based practice\n•        Research-practice linkage\n•        Quality improvement\n•        Service evaluation\n•        Policy evaluation\n•        Health system accountability\n•        Healthcare provider engagement\n•        Public health infrastructure\n•        Continuous improvement culture\n•        Inclusive leadership"
+    ]
+  },
+  {
+    "name": "Small 'n' Language",
+    "url": "https://docs.google.com/document/d/1EkcOcVbXK27XQKf7eSGjmDEiHB2WSBak/edit?usp=sharing&ouid=108775875733014348658&rtpof=true&sd=true",
+    "keywords": [
+      "Assessment \n•        Equity\n•        Health status indicators\n•        Data interpretation\n•        Data communication\n•        Disaggregated data\n•        Structural determinants of social determinants of health inequities\n•        Intermediary determinants of social determinants of health \n•        Socieconomic and political context\n•        Governance\n•        Macroeconomic policies\n•        Social policies\n•        Public policies\n•        Culture and societal values \n•        Socieconomic position\n•        Social class\n•        Gender\n•        Ethnicity \n•        Racism \n\nPolicy Development:\n•        Trust-building\n•        Health promotion strategies\n•        Asset-based communication\n•        Avoiding harmful narratives\n•        Multisector coalitions\n•        Authentic community engagement\n•        Strengths-based relationships\n•        Inclusive partnerships\n•        Community-informed solutions\n•        Policy development\n•        Policy equity \n•        Correcting historical injustices\n•        Health equity policies\n•        Health impact assessment\n•        Community resilience policies\n•        Cross-sector policy collaboration\n\nAdditional keywords\n•          Framing \n•        Small number messaging \n•        Template\n•        Small sample size\n•        Statistical Issues\n•        Reduced statistical power\n•        Wider Confidence Intervals"
+    ]
+  },
+  {
+    "name": "PSE Learning Series Videos",
+    "url": "https://docs.google.com/document/d/10QxHpO1AoWudFHxqjjtkHWm1Ln4QrGhgOONlfAbJgek/edit?usp=sharing",
+    "keywords": [
+      "Assessment [using data to determine the root causes of health disparities and inequities]\n\nPolicy Development [developing and championing policies",
+      "plans",
+      "and laws that guide the practice of public health",
+      "examining and improving existing policies",
+      "plans",
+      "and laws to correct historical injustices",
+      "collaborating with all partners",
+      "including multi-sectoral partners",
+      "to develop and support policies",
+      "plans",
+      "and laws]\n\nAssurance [connecting the population to needed health and social services that support the whole person",
+      "including preventive services",
+      "addressing and removing barriers to care",
+      "contributing to the development of a competent healthcare workforce",
+      "providing education and trainnig that encompasses a spectrum of public health comptencies",
+      "including technical",
+      "strategic",
+      "and leadership skills",
+      "cultivating and building active partnerships with academia and other professional training programs and schools to assure community-relevant learning experiences for all learners",
+      "promoting a culture of lifelong learning in public health",
+      "building a pipeline of future public health practicioners",
+      "buidling and fostering a cutlure of quality in publi chealth organizations and activities",
+      "developing an undertanding of the broader organizational infrastructures and roles that support the entire public health systems in a jurisdiction",
+      "being accountable",
+      "transparent",
+      "and inclusive with all partners and the community in all aspects of practice]"
+    ]
+  },
+  {
+    "name": "CCPHC Communications Media Interview Train-the-Trainer Series",
+    "url": "https://drive.google.com/drive/folders/1fAh0QQKsUgWyd8QZRuRZvseoN7h1pbv1?usp=drive_link",
+    "keywords": [
+      "Policy Development [developing and disseminating accessible health information and resources",
+      "including through collaboration with multiple-sector partners",
+      "communicating with accuracy and necessary speed",
+      "using appropriate communications to effectively reach the intended population",
+      "ensuring public health communications and education efforts are asset-based when appropriate and do not reinforce narratives that are damaging to disproportionately affected populations]\n\nAssurance [promoting a culture of lifelong learning in public health",
+      "employing communications and strategic planning capacities and skills]"
+    ]
+  },
+  {
+    "name": "CMAC Training",
+    "url": "https://fresnostate.zoom.us/rec/share/yPP1ox3Hu5WXnc09sWhr7zJaWIOeP25sxPPaERsifvk0g_0hTQT8KFCbkD7EryzK.XJSiCh3ABy6X8Oow?pwd=ZM3rYfohP2GfY-LQgvxKC0hCqbYhgK01",
+    "keywords": [
+      "Assurance [promoting a culture of lifelong learning in public health",
+      "buiding and fostering a culture of quality in public health organizations and activities",
+      "employing communications and strategic planning capacities and skills",
+      "being accountable",
+      "transparent",
+      "and inclusive with all partners and the community in all aspects of practice]"
+    ]
+  },
+  {
+    "name": "Traffic Fatalities Report Webinar",
+    "url": "https://fresnostate.zoom.us/rec/share/y3Xu7ZxV6bm6lB0uJFCdnG8Njn7YDYOXbFdXWqAfQMtNDNC1TuHoDNurQ5MbVRSu.e3ETRk_MWsVOsei8?startTime=1750438966000&pwd=DGUhJKVwn9glFDrbzAAAIAAAAA39ZOknLNN75phurPFxlkfNLZCTMsB7qzyE9kbH9X6rqZlQpnNgBjeSDPBW6GUgMjAwMDAwMQ",
+    "keywords": [
+      "Assessment [Maintaining an ongoing understanding of health in the jurisdiction by collecting",
+      "monitoring",
+      "and analyzing data on health and factors that influence health to identify threats",
+      "patterns",
+      "and emerging issues",
+      "with a particular emphasis on disproportionately affected populations",
+      "Using data and information to determine the root causes of health disparities and inequities",
+      "Using innovative technologies",
+      "data collection methods",
+      "and data sets",
+      "Utilizing various methods and technology to interpret and communicate data to diverse audiences",
+      "Analyzing and using disaggregated data (e.g.",
+      "by race) to track issues and inform equitable action",
+      "Anticipating",
+      "preventing",
+      "and mitigating emerging health threats through epidemiologic identification",
+      "Monitoring real-time health status and identifying patterns to develop strategies to address chronic diseases and injuries",
+      "Analyzing and utilizing inputs from multiple sectors and sources to consider social",
+      "economic",
+      "and environmental root causes of health status]\n\nPolicy Development [Developing and disseminating accessible health information and resources",
+      "including through collaboration with multi-sector partners",
+      "Communicating with accuracy and necessary speed",
+      "Ensuring public health communications and education efforts are assetbased when appropriate and do not reinforce narratives that are damaging to disproportionately affected populations",
+      "Providing input into policies",
+      "plans",
+      "and laws to ensure that health impact is considered]\n\nAssurance [Building relationships with payers and healthcare providers",
+      "including the sharing of data across partners to foster health and well-being",
+      "Contributing to the development of a competent healthcare workforce",
+      "Providing education and training that encompasses a spectrum of public health competencies",
+      "including technical",
+      "strategic",
+      "and leadership skills",
+      "Building a culturally competent public health workforce and leadership that reflects the community and practices cultural humility",
+      "Cultivating and building active partnerships with academia and other professional training programs and schools to assure community-relevant learning experiences for all learners",
+      "Promoting a culture of lifelong learning in public health",
+      "Linking public health research with public health practice",
+      "Contributing to the evidence base of effective public health practice",
+      "Evaluating services",
+      "policies",
+      "plans",
+      "and laws continuously to ensure they are contributing to health and not creating undue harm]"
+    ]
+  }
+];
+
+// Build a simple search index (lowercased joined text)
+const INDEX = DATA.map(item => ({
+  name: item.name || item.url,
+  url: item.url,
+  keywords: item.keywords || [],
+  text: ((item.name || '') + ' ' + item.url + ' ' + (item.keywords || []).join(' ')).toLowerCase()
+}));
+
+function search(query){
+  if(!query) return [];
+  const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const results = [];
+  const seen = new Set();
+  for(const entry of INDEX){
+    let matched = false;
+    for(const t of terms){
+      if(entry.text.includes(t)){ matched = true; break; }
+    }
+    if(matched && !seen.has(entry.url)){ results.push(entry); seen.add(entry.url); }
+  }
+  return results;
+}
+
+function render(results){
+  const out = document.getElementById('results');
+  const count = document.getElementById('count');
+  out.innerHTML = '';
+  count.textContent = results.length;
+  if(results.length === 0){
+    out.innerHTML = '<div class="no-results">No results found.</div>';
+    return;
+  }
+  results.sort((a,b)=> (a.name||'').localeCompare(b.name||''));
+  const frag = document.createDocumentFragment();
+  for(const r of results){
+    const card = document.createElement('div'); card.className='card';
+    const name = document.createElement('div'); name.className='name';
+    const a = document.createElement('a'); a.href = r.url; a.target='_blank'; a.rel='noopener noreferrer'; a.textContent = r.name || r.url;
+    name.appendChild(a);
+    const url = document.createElement('div'); url.className='url'; url.textContent = r.url;
+    const kwwrap = document.createElement('div');
+    if(r.keywords && r.keywords.length){
+      r.keywords.forEach(k=>{
+        const span = document.createElement('span'); span.className='kw'; span.textContent = k; kwwrap.appendChild(span);
+      });
+    }
+    card.appendChild(name); card.appendChild(url); card.appendChild(kwwrap);
+    frag.appendChild(card);
+  }
+  out.appendChild(frag);
+}
+
+document.getElementById('searchBtn').addEventListener('click', ()=>{ const q=document.getElementById('q').value; render(search(q)); });
+document.getElementById('q').addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); render(search(document.getElementById('q').value)); }});
+document.getElementById('clearBtn').addEventListener('click', ()=>{ document.getElementById('q').value=''; render([]); document.getElementById('count').textContent='0'; });
+
+// Initial empty render
+render([]);
+</script>
+</body>
+</html>
