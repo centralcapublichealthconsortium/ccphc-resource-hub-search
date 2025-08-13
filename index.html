@@ -204,7 +204,15 @@ function render(results){
   for(const r of results){
     const card = document.createElement('div'); card.className='card';
     const name = document.createElement('div'); name.className='name';
-    const a = document.createElement('a'); a.href = r.url; a.target='_blank'; a.rel='noopener noreferrer'; a.textContent = r.name || r.url;
+    const a = document.createElement('a');
+    a.href = r.url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.textContent = (r.name || r.url) + ' ↗';
+    a.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.open(r.url, '_blank', 'noopener');
+    });
     name.appendChild(a);
     const url = document.createElement('div'); url.className='url'; url.textContent = r.url;
     const kwwrap = document.createElement('div');
